@@ -41,7 +41,7 @@ func main() {
 }
 
 func run(args []string) int {
-	clilog.Env = "CLI_LOG"
+	clilog.Env = "LOG"
 	clilog.SetOutput()
 	defer log.Printf("[INFO] finish main function")
 
@@ -79,12 +79,14 @@ func (c *CLI) Run(args []string) error {
 		AccessToken: token,
 	})
 	tc := oauth2.NewClient(oauth2.NoContext, ts)
+	tc.Transport = clilog.NewTransport("github", tc.Transport)
 	client := github.NewClient(tc)
 
 	slugs := strings.Split(c.Option.Repository, "/")
 	if len(slugs) != 2 {
 		return fmt.Errorf("repository %s should be like this style: user/repo", c.Option.Repository)
 	}
+
 	owner := slugs[0]
 	repo := slugs[1]
 	number := c.Option.Number
@@ -99,7 +101,7 @@ func (c *CLI) Run(args []string) error {
 	for _, comment := range comments {
 		if comment.GetBody() == body {
 			log.Printf("[INFO] comment %q was already posted, skip it", body)
-			continue
+			return nil
 		}
 	}
 
