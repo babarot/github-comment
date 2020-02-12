@@ -7,6 +7,12 @@ Post a text to GitHub issue / pull request
 
 **Notes**: this tool is fork of [tcnksm/misc](https://github.com/tcnksm/misc/tree/master/cmd/github-comment).
 
+_Why fork?_
+
+- Use GitHub Releases (to use fixed version)
+- That repo hosts lots of commands. But GoReleaser is not supported monorepo yet ([goreleaser/goreleaser#807](https://github.com/goreleaser/goreleaser/issues/807))
+- Design to work with GitHub Actions
+
 ## Usage
 
 ```console
