@@ -82,11 +82,16 @@ func (c *CLI) Run(args []string) error {
 	client := github.NewClient(tc)
 
 	slugs := strings.Split(c.Option.Repository, "/")
-	num := c.Option.Number
+	if len(slugs) != 2 {
+		return fmt.Errorf("repository %s should be like this style: user/repo", c.Option.Repository)
+	}
+	owner := slugs[0]
+	repo := slugs[1]
+	number := c.Option.Number
 	body := c.Option.Body
 
 	// Check there are no same comments
-	comments, _, err := client.Issues.ListComments(context.Background(), slugs[0], slugs[1], num, nil)
+	comments, _, err := client.Issues.ListComments(context.Background(), owner, repo, number, nil)
 	if err != nil {
 		return err
 	}
@@ -98,7 +103,7 @@ func (c *CLI) Run(args []string) error {
 		}
 	}
 
-	if _, _, err := client.Issues.CreateComment(context.Background(), slugs[0], slugs[1], num, &github.IssueComment{
+	if _, _, err := client.Issues.CreateComment(context.Background(), owner, repo, number, &github.IssueComment{
 		Body: &body,
 	}); err != nil {
 		return err
